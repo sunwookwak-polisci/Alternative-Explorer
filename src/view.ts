@@ -682,6 +682,11 @@ export class AlternativeExplorerView extends ItemView {
 				"aria-label": `${noteCount} ${noteCount === 1 ? "note" : "notes"}`,
 			},
 		});
+		// Reserve the same trailing gutter as draggable folder rows.
+		row.createSpan({
+			cls: "alternative-explorer-drag-handle-spacer",
+			attr: { "aria-hidden": "true" },
+		});
 	}
 
 	private renderSmartFolderRow(

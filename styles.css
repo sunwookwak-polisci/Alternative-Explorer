@@ -540,7 +540,8 @@
 	min-height: 26px;
 }
 
-.is-mobile .alternative-explorer-drag-handle {
+.is-mobile .alternative-explorer-drag-handle,
+.is-mobile .alternative-explorer-drag-handle-spacer {
 	display: none;
 }
 
@@ -653,7 +654,8 @@
 	height: 12px;
 }
 
-.alternative-explorer-drag-handle {
+.alternative-explorer-drag-handle,
+.alternative-explorer-drag-handle-spacer {
 	display: inline-flex;
 	flex: 0 0 16px;
 	align-items: center;
@@ -662,6 +664,9 @@
 	height: 16px;
 	margin-right: 2px;
 	color: inherit;
+}
+
+.alternative-explorer-drag-handle {
 	cursor: grab;
 	opacity: 0;
 }
