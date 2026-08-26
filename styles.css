@@ -21,7 +21,6 @@
 }
 
 .alternative-explorer-navigation,
-.alternative-explorer-heading,
 .alternative-explorer-title-group,
 .alternative-explorer-section-header,
 .alternative-explorer-section-label,
@@ -77,17 +76,22 @@
 }
 
 .alternative-explorer-heading {
-	justify-content: space-between;
-	gap: 8px;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 4px;
 	min-width: 0;
 }
 
 .alternative-explorer-title-group {
 	gap: 4px;
 	min-width: 0;
+	width: 100%;
 }
 
 .alternative-explorer-heading h1 {
+	flex: 1 1 auto;
+	min-width: 0;
 	margin: 0;
 	overflow: hidden;
 	color: var(--text-normal);
@@ -128,10 +132,14 @@
 }
 
 .alternative-explorer-list-controls {
-	display: inline-flex;
+	display: flex;
+	width: 100%;
 	flex: 0 0 auto;
 	align-items: center;
-	gap: 2px;
+	gap: 4px;
+}
+
+.alternative-explorer-list-controls > :last-child {
 	margin-left: auto;
 }
 
@@ -157,25 +165,6 @@
 .alternative-explorer-control-button:hover {
 	color: var(--nav-item-color-hover, var(--text-normal));
 	background-color: var(--nav-item-background-hover, var(--background-modifier-hover));
-}
-
-.alternative-explorer-control-button.is-active {
-	color: var(--nav-item-color-active, var(--text-normal));
-}
-
-.alternative-explorer-pin-toggle.is-active {
-	color: var(--text-on-accent, #fff);
-	background-color: var(--interactive-accent);
-}
-
-.alternative-explorer-pin-toggle.is-active svg {
-	fill: currentColor;
-	stroke: currentColor;
-}
-
-.alternative-explorer-pin-toggle.is-active:hover {
-	color: var(--text-on-accent, #fff);
-	background-color: var(--interactive-accent-hover, var(--interactive-accent));
 }
 
 .alternative-explorer-section {

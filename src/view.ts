@@ -288,26 +288,12 @@ export class AlternativeExplorerView extends ItemView {
 				return;
 			}
 
-			const sortMenuControl = element.closest<HTMLButtonElement>("button[data-open-sort-menu]");
-			if (sortMenuControl) {
-				event.preventDefault();
-				this.showSortMenu(event, sortMenuControl);
-				return;
-			}
-
-			const groupMenuControl = element.closest<HTMLButtonElement>("button[data-open-group-menu]");
-			if (groupMenuControl) {
-				event.preventDefault();
-				this.showGroupMenu(event, groupMenuControl);
-				return;
-			}
-
-			const groupPinnedControl = element.closest<HTMLButtonElement>(
-				"button[data-group-pinned]"
+			const notesDisplayMenuControl = element.closest<HTMLButtonElement>(
+				"button[data-open-notes-display-menu]"
 			);
-			if (groupPinnedControl) {
+			if (notesDisplayMenuControl) {
 				event.preventDefault();
-				void this.setGroupPinned(groupPinnedControl.dataset.groupPinned === "true");
+				this.showNotesDisplayMenu(event, notesDisplayMenuControl);
 				return;
 			}
 
@@ -503,7 +489,8 @@ export class AlternativeExplorerView extends ItemView {
 	private renderFoldersHeader(container: HTMLElement): void {
 		const header = container.createEl("header", { cls: "alternative-explorer-header" });
 		const heading = header.createDiv({ cls: "alternative-explorer-heading" });
-		heading.createEl("h1", { text: "Folders" });
+		const titleGroup = heading.createDiv({ cls: "alternative-explorer-title-group" });
+		titleGroup.createEl("h1", { text: "Folders" });
 
 		const controls = heading.createDiv({
 			cls: "alternative-explorer-list-controls",
@@ -1084,7 +1071,7 @@ export class AlternativeExplorerView extends ItemView {
 
 		const heading = header.createDiv({ cls: "alternative-explorer-heading" });
 		const titleGroup = heading.createDiv({ cls: "alternative-explorer-title-group" });
-		titleGroup.createEl("h1", { text: title });
+		titleGroup.createEl("h1", { text: title, attr: { title } });
 		if (this.canToggleNotesDepth()) {
 			this.renderModeToggle(titleGroup);
 		}
@@ -1104,65 +1091,17 @@ export class AlternativeExplorerView extends ItemView {
 			this.renderNewFolderButton(controls);
 		}
 
-		const notesFolderPath = this.notesFolderSortParent();
-		if (notesFolderPath !== null) {
-			const { sortBy: folderSortBy, sortDir: folderSortDir } =
-				this.effectiveFolderSort(notesFolderPath);
-			const folderSortTitle = `Folder sort: ${FOLDER_SORT_BY_LABELS[folderSortBy]} ${folderSortDir === "asc" ? "ascending" : "descending"}`;
-			const folderSortButton = controls.createEl("button", {
-				cls: "clickable-icon alternative-explorer-control-button",
-				attr: {
-					type: "button",
-					"data-open-folder-sort-menu": "true",
-					"data-folder-sort-parent": notesFolderPath,
-					"aria-haspopup": "menu",
-					"aria-label": folderSortTitle,
-					title: folderSortTitle,
-				},
-			});
-			setIcon(folderSortButton, "folders");
-		}
-
-		const { sortBy, sortDir } = this.effectiveNoteSort();
-		const { groupBy, groupPinned } = this.plugin.settings;
-		const sortTitle = `Sort: ${SORT_BY_LABELS[sortBy]} ${sortDir === "asc" ? "ascending" : "descending"}`;
-		const sortButton = controls.createEl("button", {
+		const displayButton = controls.createEl("button", {
 			cls: "clickable-icon alternative-explorer-control-button",
 			attr: {
 				type: "button",
-				"data-open-sort-menu": "true",
+				"data-open-notes-display-menu": "true",
 				"aria-haspopup": "menu",
-				"aria-label": sortTitle,
-				title: sortTitle,
+				"aria-label": "Display options",
+				title: "Display options",
 			},
 		});
-		setIcon(sortButton, sortDir === "asc" ? "arrow-up-narrow-wide" : "arrow-down-wide-narrow");
-
-		const groupTitle = `Group: ${GROUP_BY_LABELS[groupBy]}`;
-		const groupButton = controls.createEl("button", {
-			cls: "clickable-icon alternative-explorer-control-button",
-			attr: {
-				type: "button",
-				"data-open-group-menu": "true",
-				"aria-haspopup": "menu",
-				"aria-label": groupTitle,
-				title: groupTitle,
-			},
-		});
-		setIcon(groupButton, groupBy === "none" ? "list" : "layers");
-
-		const pinnedTitle = groupPinned ? "Grouping pinned notes" : "Not grouping pinned notes";
-		const pinnedButton = controls.createEl("button", {
-			cls: `clickable-icon alternative-explorer-control-button alternative-explorer-pin-toggle${groupPinned ? " is-active" : ""}`,
-			attr: {
-				type: "button",
-				"data-group-pinned": String(!groupPinned),
-				"aria-pressed": String(groupPinned),
-				"aria-label": groupPinned ? "Ungroup pinned notes" : "Group pinned notes",
-				title: pinnedTitle,
-			},
-		});
-		setIcon(pinnedButton, "pin");
+		setIcon(displayButton, "sliders-horizontal");
 	}
 
 	private renderModeToggle(container: HTMLElement): void {
@@ -1446,12 +1385,19 @@ export class AlternativeExplorerView extends ItemView {
 		this.render();
 	}
 
-	private showFolderSortMenu(
-		event: MouseEvent,
-		anchor: HTMLElement,
-		parentPath: string
-	): void {
-		const menu = new Menu();
+	private showMenuAtAnchor(event: MouseEvent, menu: Menu, anchor: HTMLElement): void {
+		const rect = anchor.getBoundingClientRect();
+		menu.showAtPosition({ x: rect.left, y: rect.bottom + 4 });
+		event.stopPropagation();
+	}
+
+	private addMenuSectionLabel(menu: Menu, title: string): void {
+		menu.addItem((item) => {
+			item.setTitle(title).setIsLabel(true);
+		});
+	}
+
+	private addFolderSortMenuItems(menu: Menu, parentPath: string): void {
 		const effective = this.effectiveFolderSort(parentPath);
 		const hasOverride = hasSortOverride(
 			this.plugin.settings.folderSortOverrides,
@@ -1493,13 +1439,9 @@ export class AlternativeExplorerView extends ItemView {
 					void this.clearFolderSortOverride(parentPath);
 				});
 		});
-		const rect = anchor.getBoundingClientRect();
-		menu.showAtPosition({ x: rect.left, y: rect.bottom + 4 });
-		event.stopPropagation();
 	}
 
-	private showSortMenu(event: MouseEvent, anchor: HTMLElement): void {
-		const menu = new Menu();
+	private addNoteSortMenuItems(menu: Menu): void {
 		const effective = this.effectiveNoteSort();
 		const hasOverride = hasSortOverride(
 			this.plugin.settings.noteSortOverrides,
@@ -1541,13 +1483,9 @@ export class AlternativeExplorerView extends ItemView {
 					void this.clearNoteSortOverride();
 				});
 		});
-		const rect = anchor.getBoundingClientRect();
-		menu.showAtPosition({ x: rect.left, y: rect.bottom + 4 });
-		event.stopPropagation();
 	}
 
-	private showGroupMenu(event: MouseEvent, anchor: HTMLElement): void {
-		const menu = new Menu();
+	private addGroupMenuItems(menu: Menu): void {
 		for (const groupBy of ["none", "mtime", "ctime"] as const) {
 			menu.addItem((item) => {
 				item
@@ -1558,9 +1496,42 @@ export class AlternativeExplorerView extends ItemView {
 					});
 			});
 		}
-		const rect = anchor.getBoundingClientRect();
-		menu.showAtPosition({ x: rect.left, y: rect.bottom + 4 });
-		event.stopPropagation();
+	}
+
+	private showFolderSortMenu(
+		event: MouseEvent,
+		anchor: HTMLElement,
+		parentPath: string
+	): void {
+		const menu = new Menu();
+		this.addFolderSortMenuItems(menu, parentPath);
+		this.showMenuAtAnchor(event, menu, anchor);
+	}
+
+	private showNotesDisplayMenu(event: MouseEvent, anchor: HTMLElement): void {
+		const menu = new Menu();
+		const notesFolderPath = this.notesFolderSortParent();
+		if (notesFolderPath !== null) {
+			this.addMenuSectionLabel(menu, "Folder sort");
+			this.addFolderSortMenuItems(menu, notesFolderPath);
+			menu.addSeparator();
+		}
+
+		this.addMenuSectionLabel(menu, "Sort");
+		this.addNoteSortMenuItems(menu);
+		menu.addSeparator();
+		this.addMenuSectionLabel(menu, "Group");
+		this.addGroupMenuItems(menu);
+		menu.addSeparator();
+		menu.addItem((item) => {
+			item
+				.setTitle("Group pinned notes")
+				.setChecked(this.plugin.settings.groupPinned)
+				.onClick(() => {
+					void this.setGroupPinned(!this.plugin.settings.groupPinned);
+				});
+		});
+		this.showMenuAtAnchor(event, menu, anchor);
 	}
 
 	private showFolderContextMenu(event: MouseEvent, folderPath: string): void {
