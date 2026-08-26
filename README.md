@@ -16,8 +16,7 @@ Alternative Explorer is an Apple Notes–style sidebar for browsing folders and 
 ## Notes
 
 - Open a folder to see its notes, with immediate subfolders listed above. Toggle between this folder only and every note below it.
-- Sort notes by name, modified time, or created time. Override the default for a folder, a smart folder, or **All notes**.
-- Group notes by modified or created date, with an optional group for pinned notes.
+- Open **Display** in the notes toolbar to sort notes, sort subfolders, group by date, and group pinned notes. Override the default sort for a folder, a smart folder, or **All notes**.
 - Move through the notes list with **Up** and **Down** to preview notes while keeping focus in the explorer, and press **Enter** to open the selection in the editor.
 - Click a note to open it and move typing into the editor.
 - Create a **New note** or **New folder** from the sidebar: at the vault root from the folder tree, or inside the folder you are viewing.
