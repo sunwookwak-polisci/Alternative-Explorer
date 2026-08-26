@@ -4,7 +4,7 @@ import tseslint from "typescript-eslint";
 
 export default defineConfig([
 	{
-		ignores: ["Demo Vault/**", "main.js", "node_modules/**", "types/obsidian-review.d.ts"],
+		ignores: ["AE Demo Vault/**", "main.js", "node_modules/**", "types/obsidian-review.d.ts"],
 	},
 	...obsidianmd.configs.recommended,
 	{

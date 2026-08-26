@@ -7,6 +7,7 @@ Alternative Explorer is an Apple Notes–style sidebar for browsing folders and 
 ## Folders
 
 - Browse the folder tree, open **All notes** for a vault-wide list, and use **Reveal current note** to jump to the active note's folder.
+- Each folder shows a count of the notes and subfolders it contains.
 - Expand or fold the whole tree, including its sections, in one action.
 - Group root folders into named, collapsible sections that exist only in this sidebar.
 - Drag sections, root folders, and smart folders to change their sidebar order. Drop a folder onto another folder, or back to the vault root, to nest or un-nest it in the vault.
@@ -15,15 +16,16 @@ Alternative Explorer is an Apple Notes–style sidebar for browsing folders and 
 ## Notes
 
 - Open a folder to see its notes, with immediate subfolders listed above. Toggle between this folder only and every note below it.
-- Sort notes by name, modified time, or created time. Override the default for a folder, a smart folder, or **All notes**.
-- Group notes by modified or created date, with an optional group for pinned notes.
-- Move through the notes list with **Up** and **Down**, and press **Enter** to open the selection.
+- Open **Display** in the notes toolbar to sort notes, sort subfolders, group by date, and group pinned notes. Override the default sort for a folder, a smart folder, or **All notes**.
+- Move through the notes list with **Up** and **Down** to preview notes while keeping focus in the explorer, and press **Enter** to open the selection in the editor.
+- Click a note to open it and move typing into the editor.
 - Create a **New note** or **New folder** from the sidebar: at the vault root from the folder tree, or inside the folder you are viewing.
 
 ## Smart folders
 
 - Create saved searches from rules for tags, properties, name, path, created or modified dates, and pinned status.
 - Match all or any of the rules, and nest a smart folder under a real folder or a section.
+- On a phone or tablet, use the overflow menu on a smart folder to edit rules, rename, move, or delete it.
 
 ![Smart folder rule editor filtering notes by a property](assets/alternative-explorer-smart-folder.png)
 
@@ -38,6 +40,9 @@ Alternative Explorer is an Apple Notes–style sidebar for browsing folders and 
 - Sections, smart folders, sidebar order, and sort overrides are stored in plugin settings. They do not create vault folders.
 - Dropping a folder onto another folder, or a nested folder back to the vault root or a section, moves that folder in the vault.
 - Pin notes through Obsidian's core Bookmarks plugin. If Bookmarks is disabled, pinned groups are empty and pinning is unavailable.
+- Use **Alternative Explorer: Pin or unpin current note** to toggle a pin without opening the Bookmark editor. Bind it in **Settings → Hotkeys**. The core **Bookmark** command still opens the editor.
+- Closing the Alternative Explorer tab returns to the folder list the next time you open it.
+- The folder and notes toolbars stay visible while you scroll.
 - Vault files that Obsidian cannot open appear in the notes list. A second click or **Enter** opens them in the system default application when available.
 - Alternative Explorer does not search note contents, and it does not rename or delete existing notes.
 - Alternative Explorer has been tested only on macOS, iOS, and iPadOS. Other platforms may work but have not been verified.

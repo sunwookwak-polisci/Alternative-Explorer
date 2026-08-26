@@ -1,8 +1,10 @@
-import { Plugin, TAbstractFile, TFolder, WorkspaceLeaf } from "obsidian";
+import { Notice, Plugin, TAbstractFile, TFile, TFolder, WorkspaceLeaf } from "obsidian";
 import {
 	bookmarkPathsFingerprint,
 	getBookmarkedFilePaths,
+	getBookmarksPluginInstance,
 	subscribeBookmarksChange,
+	toggleFileBookmark,
 } from "./bookmarks";
 import {
 	AlternativeExplorerSettings,
@@ -67,6 +69,30 @@ export default class AlternativeExplorerPlugin extends Plugin {
 			name: "Open explorer view",
 			callback: () => {
 				void this.activateView();
+			},
+		});
+
+		this.addCommand({
+			id: "toggle-pin-active-note",
+			name: "Pin or unpin current note",
+			checkCallback: (checking) => {
+				const file = this.app.workspace.getActiveFile();
+				const instance = getBookmarksPluginInstance(this.app);
+				if (!(file instanceof TFile) || !instance || !Array.isArray(instance.items)) {
+					return false;
+				}
+				if (!checking) {
+					const result = toggleFileBookmark(this.app, file.path);
+					if (result === null) {
+						new Notice("Enable the core Bookmarks plugin to pin notes.");
+					} else {
+						this.lastBookmarkFingerprint = bookmarkPathsFingerprint(
+							getBookmarkedFilePaths(this.app)
+						);
+						this.scheduleRefresh();
+					}
+				}
+				return true;
 			},
 		});
 

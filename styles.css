@@ -1,6 +1,7 @@
+.workspace-leaf-content[data-type="alternative-explorer-view"] .view-content,
 .alternative-explorer-view {
 	padding: 0;
-	background: transparent;
+	background-color: var(--background-secondary);
 	overflow-y: auto;
 	color: var(--nav-item-color, var(--text-muted));
 }
@@ -8,15 +9,18 @@
 .alternative-explorer-browser {
 	width: 100%;
 	min-height: 100%;
-	padding: 4px 0 12px;
+	padding: 0 0 12px;
 }
 
 .alternative-explorer-header {
-	padding: 2px 8px 8px;
+	position: sticky;
+	top: 0;
+	z-index: 5;
+	padding: 6px 8px 8px;
+	background-color: var(--background-secondary);
 }
 
 .alternative-explorer-navigation,
-.alternative-explorer-heading,
 .alternative-explorer-title-group,
 .alternative-explorer-section-header,
 .alternative-explorer-section-label,
@@ -72,17 +76,22 @@
 }
 
 .alternative-explorer-heading {
-	justify-content: space-between;
-	gap: 8px;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 4px;
 	min-width: 0;
 }
 
 .alternative-explorer-title-group {
 	gap: 4px;
 	min-width: 0;
+	width: 100%;
 }
 
 .alternative-explorer-heading h1 {
+	flex: 1 1 auto;
+	min-width: 0;
 	margin: 0;
 	overflow: hidden;
 	color: var(--text-normal);
@@ -123,10 +132,14 @@
 }
 
 .alternative-explorer-list-controls {
-	display: inline-flex;
+	display: flex;
+	width: 100%;
 	flex: 0 0 auto;
 	align-items: center;
-	gap: 2px;
+	gap: 4px;
+}
+
+.alternative-explorer-list-controls > :last-child {
 	margin-left: auto;
 }
 
@@ -152,25 +165,6 @@
 .alternative-explorer-control-button:hover {
 	color: var(--nav-item-color-hover, var(--text-normal));
 	background-color: var(--nav-item-background-hover, var(--background-modifier-hover));
-}
-
-.alternative-explorer-control-button.is-active {
-	color: var(--nav-item-color-active, var(--text-normal));
-}
-
-.alternative-explorer-pin-toggle.is-active {
-	color: var(--text-on-accent, #fff);
-	background-color: var(--interactive-accent);
-}
-
-.alternative-explorer-pin-toggle.is-active svg {
-	fill: currentColor;
-	stroke: currentColor;
-}
-
-.alternative-explorer-pin-toggle.is-active:hover {
-	color: var(--text-on-accent, #fff);
-	background-color: var(--interactive-accent-hover, var(--interactive-accent));
 }
 
 .alternative-explorer-section {
@@ -510,6 +504,19 @@
 	min-height: 26px;
 }
 
+.is-mobile .alternative-explorer-drag-handle {
+	display: none;
+}
+
+.is-mobile .alternative-explorer-smart-folder-menu {
+	flex: 0 0 auto;
+	width: 26px;
+	min-width: 26px;
+	height: 26px;
+	min-height: 26px;
+	padding: 0;
+}
+
 .alternative-explorer-folder-toggle {
 	padding: 0;
 	color: inherit;
@@ -594,14 +601,6 @@
 	line-height: 1.2;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-}
-
-.alternative-explorer-folder-row .alternative-explorer-folder-meta {
-	display: none;
-}
-
-.alternative-explorer-folder-row.is-smart-row .alternative-explorer-folder-meta {
-	display: block;
 }
 
 .alternative-explorer-row-arrow {

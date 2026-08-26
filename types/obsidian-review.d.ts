@@ -145,7 +145,8 @@ declare module "obsidian" {
 	export interface Command {
 		id: string;
 		name: string;
-		callback: () => unknown;
+		callback?: () => unknown;
+		checkCallback?: (checking: boolean) => boolean | void;
 	}
 
 	export class Plugin extends Component {
@@ -255,6 +256,10 @@ declare module "obsidian" {
 		setControlValue(key: string, value: unknown): void | Promise<void>;
 		display(): void;
 	}
+
+	export const Platform: {
+		isMobile: boolean;
+	};
 
 	export class MenuItem {
 		setTitle(title: string | DocumentFragment): this;
