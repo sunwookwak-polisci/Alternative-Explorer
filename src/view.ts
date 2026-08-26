@@ -1433,7 +1433,7 @@ export class AlternativeExplorerView extends ItemView {
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item
-				.setTitle("Use default")
+				.setTitle("Restore Default Folder Sorting")
 				.setDisabled(!hasOverride)
 				.onClick(() => {
 					void this.clearFolderSortOverride(parentPath);
@@ -1477,7 +1477,7 @@ export class AlternativeExplorerView extends ItemView {
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item
-				.setTitle("Use default")
+				.setTitle("Restore Default File Sorting")
 				.setDisabled(!hasOverride)
 				.onClick(() => {
 					void this.clearNoteSortOverride();
@@ -1517,7 +1517,7 @@ export class AlternativeExplorerView extends ItemView {
 			menu.addSeparator();
 		}
 
-		this.addMenuSectionLabel(menu, "Sort");
+		this.addMenuSectionLabel(menu, "File Sort");
 		this.addNoteSortMenuItems(menu);
 		menu.addSeparator();
 		this.addMenuSectionLabel(menu, "Group");
