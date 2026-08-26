@@ -1087,7 +1087,7 @@ export class AlternativeExplorerView extends ItemView {
 
 		const { sortBy, sortDir } = this.effectiveNoteSort();
 		const { groupBy, groupPinned } = this.plugin.settings;
-		const sortTitle = `Sort: ${SORT_BY_LABELS[sortBy]} ${sortDir === "asc" ? "ascending" : "descending"}`;
+		const sortTitle = `File Sort: ${SORT_BY_LABELS[sortBy]} ${sortDir === "asc" ? "ascending" : "descending"}`;
 		const sortButton = controls.createEl("button", {
 			cls: "clickable-icon alternative-explorer-control-button",
 			attr: {
@@ -1449,7 +1449,7 @@ export class AlternativeExplorerView extends ItemView {
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item
-				.setTitle("Use default")
+				.setTitle("Restore Default Folder Sorting")
 				.setDisabled(!hasOverride)
 				.onClick(() => {
 					void this.clearFolderSortOverride(parentPath);
@@ -1497,7 +1497,7 @@ export class AlternativeExplorerView extends ItemView {
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item
-				.setTitle("Use default")
+				.setTitle("Restore Default File Sorting")
 				.setDisabled(!hasOverride)
 				.onClick(() => {
 					void this.clearNoteSortOverride();
