@@ -7,7 +7,7 @@ Alternative Explorer is an Apple Notes–style sidebar for browsing folders and 
 ## Folders
 
 - Browse the folder tree, open **All notes** for a vault-wide list, and use **Reveal current note** to jump to the active note's folder.
-- Each folder shows a count of the notes and subfolders it contains.
+- Each folder shows its note count on the right.
 - Expand or fold the whole tree, including its sections, in one action.
 - Group root folders into named, collapsible sections that exist only in this sidebar.
 - Drag sections, root folders, and smart folders to change their sidebar order. Drop a folder onto another folder, or back to the vault root, to nest or un-nest it in the vault.

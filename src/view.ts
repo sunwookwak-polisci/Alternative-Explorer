@@ -674,9 +674,13 @@ export class AlternativeExplorerView extends ItemView {
 		setIcon(icon, "files");
 		const copy = button.createSpan({ cls: "alternative-explorer-folder-copy" });
 		copy.createSpan({ cls: "alternative-explorer-folder-name", text: "All notes" });
-		copy.createSpan({
-			cls: "alternative-explorer-folder-meta",
-			text: this.allNotesSummary(),
+		const noteCount = this.listFilesInFolder(this.app.vault.getRoot(), true).length;
+		button.createSpan({
+			cls: "alternative-explorer-folder-count",
+			text: String(noteCount),
+			attr: {
+				"aria-label": `${noteCount} ${noteCount === 1 ? "note" : "notes"}`,
+			},
 		});
 		const arrow = button.createSpan({ cls: "alternative-explorer-row-arrow" });
 		setIcon(arrow, "chevron-right");
@@ -720,9 +724,13 @@ export class AlternativeExplorerView extends ItemView {
 			cls: "alternative-explorer-folder-name",
 			text: smartFolder.name,
 		});
-		copy.createSpan({
-			cls: "alternative-explorer-folder-meta",
-			text: this.smartFolderSummary(smartFolder),
+		const noteCount = this.countSmartFolderNotes(smartFolder);
+		button.createSpan({
+			cls: "alternative-explorer-folder-count",
+			text: String(noteCount),
+			attr: {
+				"aria-label": `${noteCount} ${noteCount === 1 ? "note" : "notes"}`,
+			},
 		});
 		const arrow = button.createSpan({ cls: "alternative-explorer-row-arrow" });
 		setIcon(arrow, "chevron-right");
@@ -834,9 +842,13 @@ export class AlternativeExplorerView extends ItemView {
 		setIcon(icon, "folder");
 		const copy = openButton.createSpan({ cls: "alternative-explorer-folder-copy" });
 		copy.createSpan({ cls: "alternative-explorer-folder-name", text: child.name });
-		copy.createSpan({
-			cls: "alternative-explorer-folder-meta",
-			text: this.folderSummary(child),
+		const noteCount = child.children.filter((entry) => entry instanceof TFile).length;
+		openButton.createSpan({
+			cls: "alternative-explorer-folder-count",
+			text: String(noteCount),
+			attr: {
+				"aria-label": `${noteCount} ${noteCount === 1 ? "note" : "notes"}`,
+			},
 		});
 
 		const dragHandle = row.createSpan({
@@ -2869,25 +2881,6 @@ export class AlternativeExplorerView extends ItemView {
 
 	private folderName(folder: TFolder): string {
 		return folder.isRoot() ? "Vault" : folder.name;
-	}
-
-	private folderSummary(folder: TFolder): string {
-		const folders = folder.children.filter((child) => child instanceof TFolder).length;
-		const files = folder.children.filter((child) => child instanceof TFile).length;
-		const parts: string[] = [];
-		if (folders > 0) parts.push(`${folders} ${folders === 1 ? "folder" : "folders"}`);
-		if (files > 0) parts.push(`${files} ${files === 1 ? "note" : "notes"}`);
-		return parts.length > 0 ? parts.join(" · ") : "Empty folder";
-	}
-
-	private allNotesSummary(): string {
-		const count = this.listFilesInFolder(this.app.vault.getRoot(), true).length;
-		return `${count} ${count === 1 ? "note" : "notes"}`;
-	}
-
-	private smartFolderSummary(smartFolder: SmartFolder): string {
-		const count = this.countSmartFolderNotes(smartFolder);
-		return `${count} ${count === 1 ? "note" : "notes"}`;
 	}
 
 	private countSmartFolderNotes(smartFolder: SmartFolder): number {
