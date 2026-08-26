@@ -1068,6 +1068,18 @@ export class AlternativeExplorerView extends ItemView {
 			cls: "alternative-explorer-pane-label",
 			text: "Folders",
 		});
+		if (this.plugin.settings.notesScope !== "all") {
+			navigation.createEl("button", {
+				cls: "alternative-explorer-all-notes-button",
+				text: "All notes",
+				attr: {
+					type: "button",
+					"data-open-all-notes": "true",
+					"aria-label": "All notes",
+					title: "All notes",
+				},
+			});
+		}
 
 		const heading = header.createDiv({ cls: "alternative-explorer-heading" });
 		const titleGroup = heading.createDiv({ cls: "alternative-explorer-title-group" });
