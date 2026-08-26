@@ -85,6 +85,11 @@ export default class AlternativeExplorerPlugin extends Plugin {
 					const result = toggleFileBookmark(this.app, file.path);
 					if (result === null) {
 						new Notice("Enable the core Bookmarks plugin to pin notes.");
+					} else {
+						this.lastBookmarkFingerprint = bookmarkPathsFingerprint(
+							getBookmarkedFilePaths(this.app)
+						);
+						this.scheduleRefresh();
 					}
 				}
 				return true;

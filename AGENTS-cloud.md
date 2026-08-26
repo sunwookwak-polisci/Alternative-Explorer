@@ -59,7 +59,7 @@ Do not edit generated `main.js` directly.
 - Preserve saved settings when schemas evolve.
 - Keep Bookmarks and operating-system file opening guarded and fail closed when unavailable.
 - Never add credentials, personal vault content, private contact details, or machine-specific paths to tracked files.
-- Do not commit local agent files, handoffs, internal notes, copied release artifacts, or Demo Vault state.
+- Do not commit local agent files, handoffs, internal notes, copied release artifacts, or AE Demo Vault state.
 - Do not change remotes, tags, releases, or Community Plugins metadata without explicit authorization.
 
 ## Completion checks

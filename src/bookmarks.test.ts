@@ -7,6 +7,7 @@ import {
 	collectBookmarkedFilePaths,
 	getBookmarkedFilePaths,
 	removeFileBookmarks,
+	subscribeBookmarksChange,
 	toggleFileBookmark,
 	wrapBookmarksRequestSave,
 	type BookmarkItem,
@@ -228,5 +229,100 @@ describe("toggleFileBookmark", () => {
 
 	it("returns null for an empty path", () => {
 		expect(toggleFileBookmark(fakeApp({ items: [] }), "")).toBeNull();
+	});
+
+	it("unpins through removeItem so Bookmarks can refresh its view", () => {
+		const item: BookmarkItem = { type: "file", path: "Notes/a.md", ctime: 1 };
+		const items: BookmarkItem[] = [item];
+		const removeItem = vi.fn((target: BookmarkItem) => {
+			const index = items.indexOf(target);
+			if (index >= 0) items.splice(index, 1);
+		});
+		const requestSave = vi.fn();
+		const onItemsChanged = vi.fn();
+
+		expect(toggleFileBookmark(fakeApp({ items, removeItem, requestSave, onItemsChanged }), "Notes/a.md")).toBe(
+			"unpinned"
+		);
+		expect(removeItem).toHaveBeenCalledWith(item);
+		expect(items).toEqual([]);
+		expect(requestSave).not.toHaveBeenCalled();
+		expect(onItemsChanged).not.toHaveBeenCalled();
+	});
+
+	it("pins through addItem so Bookmarks can refresh its view", () => {
+		const items: BookmarkItem[] = [];
+		const addItem = vi.fn((item: BookmarkItem) => {
+			items.push(item);
+		});
+		const requestSave = vi.fn();
+		const onItemsChanged = vi.fn();
+
+		expect(toggleFileBookmark(fakeApp({ items, addItem, requestSave, onItemsChanged }), "Notes/a.md")).toBe(
+			"pinned"
+		);
+		expect(addItem).toHaveBeenCalledTimes(1);
+		expect(addItem.mock.calls[0]?.[0]).toMatchObject({ type: "file", path: "Notes/a.md" });
+		expect(requestSave).not.toHaveBeenCalled();
+		expect(onItemsChanged).not.toHaveBeenCalled();
+	});
+
+	it("falls back to splicing nested items and notifying onItemsChanged", () => {
+		const items: BookmarkItem[] = [
+			{
+				type: "group",
+				items: [{ type: "file", path: "Notes/a.md", ctime: 1 }],
+			},
+		];
+		const onItemsChanged = vi.fn();
+		const requestSave = vi.fn();
+
+		expect(toggleFileBookmark(fakeApp({ items, onItemsChanged, requestSave }), "Notes/a.md")).toBe(
+			"unpinned"
+		);
+		expect(bookmarkTreeHasFile(items, "Notes/a.md")).toBe(false);
+		expect(onItemsChanged).toHaveBeenCalledWith(true);
+		expect(requestSave).not.toHaveBeenCalled();
+	});
+
+	it("falls back to splice when removeItem leaves the file in the tree", () => {
+		const items: BookmarkItem[] = [
+			{
+				type: "group",
+				items: [{ type: "file", path: "Notes/a.md", ctime: 1 }],
+			},
+		];
+		const removeItem = vi.fn();
+		const onItemsChanged = vi.fn();
+
+		expect(toggleFileBookmark(fakeApp({ items, removeItem, onItemsChanged }), "Notes/a.md")).toBe(
+			"unpinned"
+		);
+		expect(removeItem).toHaveBeenCalledTimes(1);
+		expect(bookmarkTreeHasFile(items, "Notes/a.md")).toBe(false);
+		expect(onItemsChanged).toHaveBeenCalledWith(true);
+	});
+});
+
+describe("subscribeBookmarksChange", () => {
+	it("notifies on the Bookmarks changed event", () => {
+		const listeners = new Set<() => void>();
+		const instance: BookmarksPluginInstance = {
+			items: [],
+			on: vi.fn((name: string, callback: () => void) => {
+				if (name === "changed") listeners.add(callback);
+			}),
+			off: vi.fn((name: string, callback: () => void) => {
+				if (name === "changed") listeners.delete(callback);
+			}),
+		};
+		const onChange = vi.fn();
+		const unsubscribe = subscribeBookmarksChange(fakeApp(instance), onChange);
+
+		for (const listener of listeners) listener();
+		expect(onChange).toHaveBeenCalledTimes(1);
+
+		unsubscribe?.();
+		expect(instance.off).toHaveBeenCalledWith("changed", onChange);
 	});
 });

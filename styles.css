@@ -1,6 +1,7 @@
+.workspace-leaf-content[data-type="alternative-explorer-view"] .view-content,
 .alternative-explorer-view {
 	padding: 0;
-	background: transparent;
+	background-color: var(--background-secondary);
 	overflow-y: auto;
 	color: var(--nav-item-color, var(--text-muted));
 }
@@ -8,14 +9,14 @@
 .alternative-explorer-browser {
 	width: 100%;
 	min-height: 100%;
-	padding: 4px 0 12px;
+	padding: 0 0 12px;
 }
 
 .alternative-explorer-header {
 	position: sticky;
 	top: 0;
 	z-index: 5;
-	padding: 2px 8px 8px;
+	padding: 6px 8px 8px;
 	background-color: var(--background-secondary);
 }
 

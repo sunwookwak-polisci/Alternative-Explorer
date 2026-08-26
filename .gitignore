@@ -5,7 +5,7 @@ main.js.map
 *.log
 
 # Local screenshot and smoke-test vault (never publish vault state or content)
-/Demo Vault/
+/AE Demo Vault/
 
 # Local agent configuration and internal workflow files
 # AGENTS-cloud.md is intentionally tracked (public/cloud agent entry)

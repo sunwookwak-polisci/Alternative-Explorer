@@ -39,11 +39,11 @@ To skip the copy step, symlink the clone to that plugin folder and run `npm run 
 
 On iOS or iPadOS, put the same three files in that vault's `plugins/alternative-explorer/` (Obsidian Sync, iCloud, or Files), then force-quit and reopen Obsidian so it reloads the bundle.
 
-## Demo Vault and screenshot
+## AE Demo Vault and screenshot
 
-`Demo Vault/` is a local-only, ignored Obsidian vault used for smoke testing and the Community Plugins listing screenshot. Never force-add it or commit its notes, settings, workspace state, plugin data, or copied release artifacts.
+`AE Demo Vault/` is a local-only, ignored Obsidian vault used for smoke testing and the Community Plugins listing screenshot. Never force-add it or commit its notes, settings, workspace state, plugin data, or copied release artifacts.
 
-To refresh the screenshot, build the plugin, copy `main.js`, `manifest.json`, and `styles.css` to `Demo Vault/.obsidian/plugins/alternative-explorer/`, open the existing prepared workspace in Obsidian's default dark theme, and capture the application window without personal data, notifications, development tools, or unrelated plugins. Store the reviewed image at `assets/alternative-explorer-demo.png`.
+To refresh the screenshot, build the plugin, copy `main.js`, `manifest.json`, and `styles.css` to `AE Demo Vault/.obsidian/plugins/alternative-explorer/`, open the existing prepared workspace in Obsidian's default dark theme, and capture the application window without personal data, notifications, development tools, or unrelated plugins. Store the reviewed image at `assets/alternative-explorer-demo.png`.
 
 ## Pull requests
 

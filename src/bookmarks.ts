@@ -15,6 +15,11 @@ export interface BookmarksPluginInstance {
 	items?: BookmarkItem[];
 	getBookmarks?: () => unknown;
 	requestSave?: () => void;
+	addItem?: (item: BookmarkItem, parent?: BookmarkItem) => void;
+	removeItem?: (item: BookmarkItem) => void;
+	onItemsChanged?: (save?: boolean) => void;
+	on?: (name: string, callback: () => void) => unknown;
+	off?: (name: string, callback: () => void) => void;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -135,7 +140,7 @@ export function wrapBookmarksRequestSave(
 }
 
 /**
- * Subscribes to Bookmarks persistence via `requestSave`.
+ * Subscribes to Bookmarks persistence via `changed` and `requestSave`.
  * Returns unsubscribe, or null when Bookmarks is unavailable.
  */
 export function subscribeBookmarksChange(app: App, onChange: () => void): (() => void) | null {
@@ -143,7 +148,20 @@ export function subscribeBookmarksChange(app: App, onChange: () => void): (() =>
 	if (!instance) {
 		return null;
 	}
-	return wrapBookmarksRequestSave(instance, onChange);
+
+	const unsubscribeSave = wrapBookmarksRequestSave(instance, onChange);
+	let listeningToChanged = false;
+	if (typeof instance.on === "function") {
+		instance.on("changed", onChange);
+		listeningToChanged = true;
+	}
+
+	return () => {
+		unsubscribeSave();
+		if (listeningToChanged && typeof instance.off === "function") {
+			instance.off("changed", onChange);
+		}
+	};
 }
 
 /** Pure helper for tests: flatten nested bookmark-like items to file paths. */
@@ -156,6 +174,32 @@ export function collectBookmarkedFilePaths(items: readonly unknown[]): Set<strin
 /** Returns true when any file bookmark matches `path` (including nested groups). */
 export function bookmarkTreeHasFile(items: readonly BookmarkItem[], path: string): boolean {
 	return collectBookmarkedFilePaths(items).has(path);
+}
+
+function collectFileBookmarkItems(
+	items: readonly unknown[],
+	path: string,
+	into: BookmarkItem[]
+): void {
+	for (const item of items) {
+		if (!isRecord(item)) continue;
+		const bookmark = item as BookmarkItem;
+		if (bookmark.type === "file" && bookmark.path === path) {
+			into.push(bookmark);
+			continue;
+		}
+		if (bookmark.type === "group" && Array.isArray(bookmark.items)) {
+			collectFileBookmarkItems(bookmark.items, path, into);
+		}
+	}
+}
+
+function persistBookmarkChange(instance: BookmarksPluginInstance): void {
+	if (typeof instance.onItemsChanged === "function") {
+		instance.onItemsChanged(true);
+		return;
+	}
+	instance.requestSave?.();
 }
 
 /**
@@ -218,13 +262,27 @@ export function toggleFileBookmark(app: App, path: string): PinToggleResult | nu
 	try {
 		const items = instance.items;
 		if (bookmarkTreeHasFile(items, path)) {
-			removeFileBookmarks(items, path);
-			instance.requestSave?.();
+			const matches: BookmarkItem[] = [];
+			collectFileBookmarkItems(items, path, matches);
+			if (typeof instance.removeItem === "function") {
+				for (const item of matches) {
+					instance.removeItem(item);
+				}
+			}
+			if (bookmarkTreeHasFile(items, path)) {
+				removeFileBookmarks(items, path);
+				persistBookmarkChange(instance);
+			}
 			return "unpinned";
 		}
 
-		addRootFileBookmark(items, path);
-		instance.requestSave?.();
+		if (typeof instance.addItem === "function") {
+			instance.addItem({ type: "file", path, ctime: Date.now() });
+		}
+		if (!bookmarkTreeHasFile(items, path)) {
+			addRootFileBookmark(items, path);
+			persistBookmarkChange(instance);
+		}
 		return "pinned";
 	} catch {
 		return null;
