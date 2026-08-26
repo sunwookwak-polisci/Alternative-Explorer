@@ -66,10 +66,10 @@ export class AlternativeExplorerSettingTab extends PluginSettingTab {
 			},
 			{
 				type: "group",
-				heading: "Default note sort",
+				heading: "Default file sort",
 				items: [
 					{
-						name: "Sort notes by",
+						name: "Sort files by",
 						desc: "Used for all notes, folders, and smart folders unless that scope has its own sort override in the notes view.",
 						control: {
 							type: "dropdown",
@@ -79,7 +79,7 @@ export class AlternativeExplorerSettingTab extends PluginSettingTab {
 						},
 					},
 					{
-						name: "Note sort direction",
+						name: "File sort direction",
 						control: {
 							type: "dropdown",
 							key: "sortDir",
@@ -157,14 +157,14 @@ export class AlternativeExplorerSettingTab extends PluginSettingTab {
 				});
 			});
 
-		new Setting(containerEl).setName("Default note sort").setHeading();
+		new Setting(containerEl).setName("Default file sort").setHeading();
 		containerEl.createEl("p", {
 			cls: "setting-item-description",
 			text: "Used for all notes, folders, and smart folders unless that scope has its own sort override in the notes view.",
 		});
 
 		new Setting(containerEl)
-			.setName("Sort notes by")
+			.setName("Sort files by")
 			.addDropdown((dropdown) => {
 				for (const [value, label] of Object.entries(NOTE_SORT_OPTIONS)) {
 					dropdown.addOption(value, label);
@@ -176,7 +176,7 @@ export class AlternativeExplorerSettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Note sort direction")
+			.setName("File sort direction")
 			.addDropdown((dropdown) => {
 				for (const [value, label] of Object.entries(DIR_OPTIONS)) {
 					dropdown.addOption(value, label);
