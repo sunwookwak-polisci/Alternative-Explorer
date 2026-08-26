@@ -75,6 +75,21 @@
 	font-size: var(--nav-item-size, var(--font-ui-small));
 }
 
+.alternative-explorer-all-notes-button {
+	margin-left: auto;
+	height: 24px;
+	padding: 0 4px;
+	color: var(--nav-item-color, var(--text-muted));
+	font-size: var(--nav-item-size, var(--font-ui-small));
+	border-radius: var(--radius-s);
+	cursor: pointer;
+}
+
+.alternative-explorer-all-notes-button:hover {
+	color: var(--nav-item-color-hover, var(--text-normal));
+	background-color: var(--nav-item-background-hover, var(--background-modifier-hover));
+}
+
 .alternative-explorer-heading {
 	display: flex;
 	flex-direction: column;
@@ -423,16 +438,35 @@
 .alternative-explorer-file-row.is-active {
 	position: relative;
 	z-index: 1;
-	color: var(--nav-item-color-active, var(--text-normal));
-	background-color: var(--nav-item-background-active, var(--background-modifier-hover));
-	border-color: var(--interactive-accent);
+	color: var(--text-on-accent, #fff);
+	background-color: var(--interactive-accent);
+	border-color: transparent;
 	box-shadow: none;
 	font-weight: var(--nav-item-weight-active, var(--font-medium));
+}
+
+.alternative-explorer-file-row.is-active:hover,
+.alternative-explorer-file-row.is-active:focus-visible {
+	color: var(--text-on-accent, #fff);
+	background-color: var(--interactive-accent-hover, var(--interactive-accent));
 }
 
 .alternative-explorer-file-row.is-active .alternative-explorer-file-title,
 .alternative-explorer-file-row.is-active .alternative-explorer-row-icon {
 	color: inherit;
+	opacity: 1;
+}
+
+.alternative-explorer-file-row.is-active .alternative-explorer-file-location,
+.alternative-explorer-file-row.is-active .alternative-explorer-file-date {
+	color: var(--text-on-accent, #fff);
+	opacity: 0.8;
+}
+
+.alternative-explorer-file-row.is-active.is-revealed {
+	color: var(--text-on-accent, #fff);
+	background-color: var(--interactive-accent);
+	border-color: transparent;
 }
 
 .alternative-explorer-folder-row.is-selected {
