@@ -682,8 +682,6 @@ export class AlternativeExplorerView extends ItemView {
 				"aria-label": `${noteCount} ${noteCount === 1 ? "note" : "notes"}`,
 			},
 		});
-		const arrow = button.createSpan({ cls: "alternative-explorer-row-arrow" });
-		setIcon(arrow, "chevron-right");
 	}
 
 	private renderSmartFolderRow(
@@ -732,8 +730,6 @@ export class AlternativeExplorerView extends ItemView {
 				"aria-label": `${noteCount} ${noteCount === 1 ? "note" : "notes"}`,
 			},
 		});
-		const arrow = button.createSpan({ cls: "alternative-explorer-row-arrow" });
-		setIcon(arrow, "chevron-right");
 
 		if (Platform.isMobile) {
 			const menuButton = row.createEl("button", {
