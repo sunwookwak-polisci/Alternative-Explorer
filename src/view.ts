@@ -1520,7 +1520,7 @@ export class AlternativeExplorerView extends ItemView {
 		this.addMenuSectionLabel(menu, "File Sort");
 		this.addNoteSortMenuItems(menu);
 		menu.addSeparator();
-		this.addMenuSectionLabel(menu, "Group");
+		this.addMenuSectionLabel(menu, "Group File By");
 		this.addGroupMenuItems(menu);
 		menu.addSeparator();
 		menu.addItem((item) => {
