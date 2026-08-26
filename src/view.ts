@@ -527,7 +527,7 @@ export class AlternativeExplorerView extends ItemView {
 		const { sortBy: folderSortBy, sortDir: folderSortDir } = this.effectiveFolderSort(
 			this.app.vault.getRoot().path
 		);
-		const sortTitle = `Sort: ${FOLDER_SORT_BY_LABELS[folderSortBy]} ${folderSortDir === "asc" ? "ascending" : "descending"}`;
+		const sortTitle = `Folder Sort: ${FOLDER_SORT_BY_LABELS[folderSortBy]} ${folderSortDir === "asc" ? "ascending" : "descending"}`;
 		const sortButton = controls.createEl("button", {
 			cls: "clickable-icon alternative-explorer-control-button",
 			attr: {
@@ -1512,7 +1512,7 @@ export class AlternativeExplorerView extends ItemView {
 		const menu = new Menu();
 		const notesFolderPath = this.notesFolderSortParent();
 		if (notesFolderPath !== null) {
-			this.addMenuSectionLabel(menu, "Folder sort");
+			this.addMenuSectionLabel(menu, "Folder Sort");
 			this.addFolderSortMenuItems(menu, notesFolderPath);
 			menu.addSeparator();
 		}
@@ -1525,7 +1525,7 @@ export class AlternativeExplorerView extends ItemView {
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item
-				.setTitle("Group pinned notes")
+				.setTitle("Group Pinned Files")
 				.setChecked(this.plugin.settings.groupPinned)
 				.onClick(() => {
 					void this.setGroupPinned(!this.plugin.settings.groupPinned);
