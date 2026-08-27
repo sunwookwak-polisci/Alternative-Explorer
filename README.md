@@ -2,6 +2,10 @@
 
 Alternative Explorer is an Apple Notes–style sidebar for browsing folders and notes in Obsidian. Switch between an expandable folder tree and a notes list — a compact alternative to the built-in File Explorer.
 
+> **What’s new in 1.2.0.**
+> 
+> The sidebar is easier to scan and quicker to use. Folders show how many notes they hold, sort and grouping live in one **Display** menu, and clicking a note opens it and automatically shifts focus to the editor pane so you can type right away. [Full release notes](https://github.com/sunwookwak-polisci/Alternative-Explorer/releases/tag/1.2.0).
+
 ![Alternative Explorer showing a smart folder with pinned and date-grouped files](assets/alternative-explorer-demo.png)
 
 ## Folders and Notes
