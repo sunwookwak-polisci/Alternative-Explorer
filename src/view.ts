@@ -80,6 +80,13 @@ type FolderDropTarget = {
 
 const UNASSIGNED_SECTION_ID = "";
 
+function setMenuItemIsLabel(
+	item: { setIsLabel?: (isLabel: boolean) => unknown },
+	isLabel: boolean
+): void {
+	item.setIsLabel?.(isLabel);
+}
+
 const SORT_BY_LABELS: Record<NoteSortBy, string> = {
 	name: "Name",
 	mtime: "Modified",
@@ -1400,7 +1407,8 @@ export class AlternativeExplorerView extends ItemView {
 
 	private addMenuSectionLabel(menu: Menu, title: string): void {
 		menu.addItem((item) => {
-			item.setTitle(title).setIsLabel(true);
+			item.setTitle(title);
+			setMenuItemIsLabel(item, true);
 		});
 	}
 

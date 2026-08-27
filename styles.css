@@ -7,20 +7,18 @@
 }
 
 /* Phone/tablet: Obsidian pads plugin views with file margins / safe-area.
-   In a sidebar that becomes a wide empty gutter. Beat host rules on tablet. */
+   In a sidebar that becomes a wide empty gutter. Beat host rules with specificity. */
 .is-mobile .workspace-leaf-content[data-type="alternative-explorer-view"],
-.is-tablet .workspace-leaf-content[data-type="alternative-explorer-view"] {
+.is-tablet .workspace-leaf-content[data-type="alternative-explorer-view"],
+body.is-mobile .workspace-leaf-content[data-type="alternative-explorer-view"],
+body.is-tablet .workspace-leaf-content[data-type="alternative-explorer-view"],
+body.is-phone .mod-root .workspace-leaf-content[data-type="alternative-explorer-view"] .view-content,
+body.is-tablet .workspace-leaf-content[data-type="alternative-explorer-view"] .view-content.alternative-explorer-view,
+body.is-mobile .workspace-drawer-active-tab-content .workspace-leaf-content[data-type="alternative-explorer-view"] .view-content.alternative-explorer-view {
 	--file-margins: 0px;
 	padding: 0;
 	padding-inline: 0;
-}
-
-body.is-tablet .workspace-leaf-content[data-type="alternative-explorer-view"],
-body.is-tablet .workspace-leaf-content[data-type="alternative-explorer-view"] .view-content {
-	--file-margins: 0px;
-	padding: 0 !important;
-	padding-inline: 0 !important;
-	margin-inline-start: 0 !important;
+	margin-inline-start: 0;
 }
 
 .alternative-explorer-browser {

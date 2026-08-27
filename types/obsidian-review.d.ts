@@ -266,6 +266,7 @@ declare module "obsidian" {
 		setIcon(icon: string | null): this;
 		setChecked(checked: boolean): this;
 		setDisabled(disabled: boolean): this;
+		setIsLabel(isLabel: boolean): this;
 		onClick(callback: (event: MouseEvent) => unknown): this;
 	}
 
