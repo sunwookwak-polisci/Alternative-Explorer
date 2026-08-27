@@ -347,6 +347,17 @@ export class AlternativeExplorerView extends ItemView {
 
 		this.registerDomEvent(this.contentEl, "dragstart", (event) => {
 			const target = event.target as HTMLElement;
+			if (!target.closest(".alternative-explorer-drag-handle")) {
+				if (
+					target.closest(
+						".alternative-explorer-folder-section-header[data-section-id], .alternative-explorer-folder-row[data-folder-path]"
+					)
+				) {
+					event.preventDefault();
+				}
+				return;
+			}
+
 			const sectionHeader = target.closest<HTMLElement>(
 				".alternative-explorer-folder-section-header[data-section-id]"
 			);
@@ -356,6 +367,7 @@ export class AlternativeExplorerView extends ItemView {
 				event.dataTransfer?.setData("text/plain", `section:${sectionHeader.dataset.sectionId}`);
 				if (event.dataTransfer) {
 					event.dataTransfer.effectAllowed = "move";
+					event.dataTransfer.setDragImage(sectionHeader, 16, 12);
 				}
 				sectionHeader.addClass("is-dragging");
 				return;
@@ -375,6 +387,7 @@ export class AlternativeExplorerView extends ItemView {
 			event.dataTransfer?.setData("text/plain", path);
 			if (event.dataTransfer) {
 				event.dataTransfer.effectAllowed = "move";
+				event.dataTransfer.setDragImage(row, 16, 12);
 			}
 			row.addClass("is-dragging");
 		});
@@ -596,8 +609,19 @@ export class AlternativeExplorerView extends ItemView {
 		setIcon(button, "folder-plus");
 	}
 
-	private folderRowDragAttr(): Record<string, string> {
+	private dragHandleAttr(): Record<string, string> {
 		return Platform.isMobile ? {} : { draggable: "true" };
+	}
+
+	private appendDragHandle(parent: HTMLElement): void {
+		const dragHandle = parent.createSpan({
+			cls: "alternative-explorer-drag-handle",
+			attr: {
+				"aria-hidden": "true",
+				...this.dragHandleAttr(),
+			},
+		});
+		setIcon(dragHandle, "grip-vertical");
 	}
 
 	private renderFolderSection(
@@ -609,7 +633,6 @@ export class AlternativeExplorerView extends ItemView {
 		const header = list.createDiv({
 			cls: `alternative-explorer-folder-section-header${collapsed ? "" : " is-expanded"}`,
 			attr: {
-				...this.folderRowDragAttr(),
 				"data-section-id": folderSection.id,
 			},
 		});
@@ -633,12 +656,7 @@ export class AlternativeExplorerView extends ItemView {
 			cls: "alternative-explorer-folder-section-name",
 			text: folderSection.name,
 		});
-
-		const dragHandle = header.createSpan({
-			cls: "alternative-explorer-drag-handle",
-			attr: { "aria-hidden": "true" },
-		});
-		setIcon(dragHandle, "grip-vertical");
+		this.appendDragHandle(header);
 
 		if (collapsed) {
 			return;
@@ -703,7 +721,6 @@ export class AlternativeExplorerView extends ItemView {
 		const row = list.createDiv({
 			cls: `alternative-explorer-folder-row is-smart-row${selected ? " is-selected" : ""}`,
 			attr: {
-				...this.folderRowDragAttr(),
 				"data-folder-path": itemKey,
 				"data-smart-folder-id": smartFolder.id,
 				"data-parent-path": parentPath,
@@ -749,11 +766,7 @@ export class AlternativeExplorerView extends ItemView {
 			setIcon(menuButton, "ellipsis-vertical");
 		}
 
-		const dragHandle = row.createSpan({
-			cls: "alternative-explorer-drag-handle",
-			attr: { "aria-hidden": "true" },
-		});
-		setIcon(dragHandle, "grip-vertical");
+		this.appendDragHandle(row);
 	}
 
 	private renderFolderTreeItem(
@@ -805,7 +818,6 @@ export class AlternativeExplorerView extends ItemView {
 		const row = list.createDiv({
 			cls: `alternative-explorer-folder-row${selected ? " is-selected" : ""}`,
 			attr: {
-				...this.folderRowDragAttr(),
 				"data-folder-path": child.path,
 				"data-parent-path": parentPath,
 				"data-section-id": isRootChild ? sectionId : "",
@@ -852,11 +864,7 @@ export class AlternativeExplorerView extends ItemView {
 			},
 		});
 
-		const dragHandle = row.createSpan({
-			cls: "alternative-explorer-drag-handle",
-			attr: { "aria-hidden": "true" },
-		});
-		setIcon(dragHandle, "grip-vertical");
+		this.appendDragHandle(row);
 	}
 
 	private renderNotesPane(container: HTMLElement): void {

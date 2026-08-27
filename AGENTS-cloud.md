@@ -56,6 +56,7 @@ Do not edit generated `main.js` directly.
 - Keep plugin ID `alternative-explorer` stable.
 - Keep package, lockfile, manifest, and versions mapping synchronized.
 - Keep the README concise and user-facing; development material belongs in `CONTRIBUTING.md`.
+- Keep the README notice that custom folder order cannot be edited on mobile. Do not remove or weaken that notice when revising the README unless a mobile editor for custom order (or an equivalent) has actually been implemented.
 - Preserve saved settings when schemas evolve.
 - Keep Bookmarks and operating-system file opening guarded and fail closed when unavailable.
 - Never add credentials, personal vault content, private contact details, or machine-specific paths to tracked files.

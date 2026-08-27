@@ -316,6 +316,7 @@
 	min-height: var(--nav-item-size, 28px);
 	padding: 0 4px 0 8px;
 	color: var(--nav-item-color, var(--text-muted));
+	-webkit-user-drag: none;
 }
 
 .alternative-explorer-folder-children {
@@ -345,7 +346,8 @@
 	padding: 0 4px;
 	color: var(--text-muted);
 	border-radius: var(--radius-s);
-	cursor: grab;
+	cursor: default;
+	-webkit-user-drag: none;
 }
 
 .alternative-explorer-folder-section-header:hover,
@@ -669,6 +671,8 @@
 .alternative-explorer-drag-handle {
 	cursor: grab;
 	opacity: 0;
+	-webkit-user-drag: element;
+	user-select: none;
 }
 
 .alternative-explorer-drag-handle svg {

@@ -10,8 +10,9 @@ Alternative Explorer is an Apple Notes–style sidebar for browsing folders and 
 - Each folder shows its note count on the right.
 - Expand or fold the whole tree, including its sections, in one action.
 - Group root folders into named, collapsible sections that exist only in this sidebar.
-- Drag sections, root folders, and smart folders to change their sidebar order. Drop a folder onto another folder, or back to the vault root, to nest or un-nest it in the vault.
+- Drag the grip on a section, folder, or smart folder to change sidebar order. Click a folder to open its notes. Drop a folder onto another folder, or back to the vault root, to nest or un-nest it in the vault.
 - Sort folders by name, modified time, created time, or a custom order. Set the default in **Settings → Alternative Explorer**, and override it for an individual folder from the explorer.
+- On a phone or tablet, you can use a custom folder order but you cannot rearrange it. Drag-to-reorder is desktop-only for now; a mobile way to edit custom order is planned.
 
 ## Notes
 
