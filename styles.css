@@ -6,6 +6,23 @@
 	color: var(--nav-item-color, var(--text-muted));
 }
 
+/* Phone/tablet: Obsidian pads plugin views with file margins / safe-area.
+   In a sidebar that becomes a wide empty gutter. Beat host rules on tablet. */
+.is-mobile .workspace-leaf-content[data-type="alternative-explorer-view"],
+.is-tablet .workspace-leaf-content[data-type="alternative-explorer-view"] {
+	--file-margins: 0px;
+	padding: 0;
+	padding-inline: 0;
+}
+
+body.is-tablet .workspace-leaf-content[data-type="alternative-explorer-view"],
+body.is-tablet .workspace-leaf-content[data-type="alternative-explorer-view"] .view-content {
+	--file-margins: 0px;
+	padding: 0 !important;
+	padding-inline: 0 !important;
+	margin-inline-start: 0 !important;
+}
+
 .alternative-explorer-browser {
 	width: 100%;
 	min-height: 100%;
@@ -319,6 +336,10 @@
 	-webkit-user-drag: none;
 }
 
+.is-tablet .alternative-explorer-folder-row {
+	padding-left: 0;
+}
+
 .alternative-explorer-folder-children {
 	position: relative;
 	margin-left: calc(8px + var(--nav-indentation-guide-width, 12px));
@@ -542,18 +563,19 @@
 	min-height: 26px;
 }
 
+/* iPad sidebar is narrow; keep the phone 26px target but use desktop width on tablet. */
+.is-tablet .alternative-explorer-folder-row > .alternative-explorer-folder-toggle,
+.is-tablet .alternative-explorer-folder-row > .alternative-explorer-folder-toggle-spacer {
+	flex-basis: 22px;
+	width: 22px;
+	min-width: 22px;
+	height: 22px;
+	min-height: 22px;
+}
+
 .is-mobile .alternative-explorer-drag-handle,
 .is-mobile .alternative-explorer-drag-handle-spacer {
 	display: none;
-}
-
-.is-mobile .alternative-explorer-smart-folder-menu {
-	flex: 0 0 auto;
-	width: 26px;
-	min-width: 26px;
-	height: 26px;
-	min-height: 26px;
-	padding: 0;
 }
 
 .alternative-explorer-folder-toggle {

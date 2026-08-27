@@ -238,19 +238,6 @@ export class AlternativeExplorerView extends ItemView {
 				return;
 			}
 
-			const smartFolderMenuControl = element.closest<HTMLButtonElement>(
-				"button[data-smart-folder-menu]"
-			);
-			if (smartFolderMenuControl?.dataset.smartFolderMenu) {
-				event.preventDefault();
-				this.showSmartFolderContextMenu(
-					event,
-					smartFolderMenuControl.dataset.smartFolderMenu,
-					smartFolderMenuControl
-				);
-				return;
-			}
-
 			const revealControl = element.closest<HTMLButtonElement>(
 				"button[data-reveal-current-note]"
 			);
@@ -752,19 +739,6 @@ export class AlternativeExplorerView extends ItemView {
 				"aria-label": `${noteCount} ${noteCount === 1 ? "note" : "notes"}`,
 			},
 		});
-
-		if (Platform.isMobile) {
-			const menuButton = row.createEl("button", {
-				cls: "clickable-icon alternative-explorer-smart-folder-menu",
-				attr: {
-					type: "button",
-					"data-smart-folder-menu": smartFolder.id,
-					"aria-label": `${smartFolder.name} options`,
-					title: `${smartFolder.name} options`,
-				},
-			});
-			setIcon(menuButton, "ellipsis-vertical");
-		}
 
 		this.appendDragHandle(row);
 	}
@@ -1787,15 +1761,11 @@ export class AlternativeExplorerView extends ItemView {
 		this.render();
 	}
 
-	private showSmartFolderContextMenu(
-		event: MouseEvent,
-		id: string,
-		anchor?: HTMLElement
-	): void {
+	private showSmartFolderContextMenu(event: MouseEvent, id: string): void {
 		const smartFolder = this.plugin.settings.smartFolders.find((folder) => folder.id === id);
 		if (!smartFolder) return;
 
-		const menu = anchor ? new Menu() : Menu.forEvent(event);
+		const menu = Menu.forEvent(event);
 		menu.addItem((item) => {
 			item
 				.setTitle("Edit rules")
@@ -1862,12 +1832,6 @@ export class AlternativeExplorerView extends ItemView {
 					this.confirmDeleteSmartFolder(id, smartFolder.name);
 				});
 		});
-
-		if (anchor) {
-			const rect = anchor.getBoundingClientRect();
-			menu.showAtPosition({ x: rect.left, y: rect.bottom + 4 });
-			event.stopPropagation();
-		}
 	}
 
 	private async moveSmartFolderToRoot(id: string): Promise<void> {
@@ -2336,7 +2300,7 @@ export class AlternativeExplorerView extends ItemView {
 		if (canOpenInObsidian(this.app, file)) {
 			this.selectedFilePath = path;
 			this.applySelectionHighlight();
-			await this.openInWorkspace(file, { focusEditor: true });
+			await this.openInWorkspace(file);
 			return;
 		}
 
@@ -2353,16 +2317,6 @@ export class AlternativeExplorerView extends ItemView {
 	private registerNoteHotkeys(): void {
 		if (!this.scope) return;
 
-		this.scope.register([], "ArrowDown", (event) => {
-			if (!this.handleNoteArrowNavigation(1)) return;
-			event.preventDefault();
-			return false;
-		});
-		this.scope.register([], "ArrowUp", (event) => {
-			if (!this.handleNoteArrowNavigation(-1)) return;
-			event.preventDefault();
-			return false;
-		});
 		this.scope.register([], "Enter", (event) => {
 			if (!this.handleNoteEnter()) return;
 			event.preventDefault();
@@ -2371,60 +2325,10 @@ export class AlternativeExplorerView extends ItemView {
 	}
 
 	private handleNoteKeydown(event: KeyboardEvent): void {
-		const key = event.key;
-		if (key === "ArrowDown") {
-			if (!this.handleNoteArrowNavigation(1)) return;
-			event.preventDefault();
-			event.stopPropagation();
-			return;
-		}
-		if (key === "ArrowUp") {
-			if (!this.handleNoteArrowNavigation(-1)) return;
-			event.preventDefault();
-			event.stopPropagation();
-			return;
-		}
-		if (key === "Enter") {
-			if (!this.handleNoteEnter()) return;
-			event.preventDefault();
-			event.stopPropagation();
-		}
-	}
-
-	/** Returns false when the event should be ignored. */
-	private handleNoteArrowNavigation(delta: 1 | -1): boolean {
-		if (this.plugin.settings.pane !== "notes") return false;
-
-		const active = document.activeElement;
-		if (
-			active instanceof HTMLElement &&
-			active.closest("input, textarea, select, [contenteditable='true']")
-		) {
-			return false;
-		}
-
-		const rows = this.getNoteRows();
-		if (rows.length === 0) return false;
-
-		const currentIndex = this.resolveNoteRowIndex(rows);
-		const nextIndex =
-			delta > 0
-				? Math.min((currentIndex < 0 ? -1 : currentIndex) + 1, rows.length - 1)
-				: Math.max(currentIndex < 0 ? rows.length - 1 : currentIndex - 1, 0);
-		const nextRow = rows[nextIndex];
-		const nextPath = nextRow?.dataset.filePath;
-		if (!nextPath || !nextRow) return false;
-
-		this.selectedFilePath = nextPath;
-		this.applySelectionHighlight();
-		nextRow.focus({ preventScroll: true });
-		nextRow.scrollIntoView({ block: "nearest" });
-
-		const file = this.app.vault.getAbstractFileByPath(nextPath);
-		if (file instanceof TFile && canOpenInObsidian(this.app, file)) {
-			void this.openInWorkspace(file, { focusEditor: false });
-		}
-		return true;
+		if (event.key !== "Enter") return;
+		if (!this.handleNoteEnter()) return;
+		event.preventDefault();
+		event.stopPropagation();
 	}
 
 	/** Returns false when the event should be ignored. */
@@ -2448,39 +2352,26 @@ export class AlternativeExplorerView extends ItemView {
 		const path = focusedRow?.dataset.filePath ?? this.selectedFilePath;
 		if (!path) return false;
 
-		void this.confirmOpenNote(path, { focusEditor: true });
+		void this.confirmOpenNote(path);
 		return true;
 	}
 
-	private async confirmOpenNote(
-		path: string,
-		options: { focusEditor: boolean } = { focusEditor: true }
-	): Promise<void> {
+	private async confirmOpenNote(path: string): Promise<void> {
 		const file = this.app.vault.getAbstractFileByPath(path);
 		if (!(file instanceof TFile)) return;
 
 		this.selectedFilePath = path;
 		this.applySelectionHighlight();
 		if (canOpenInObsidian(this.app, file)) {
-			await this.openInWorkspace(file, options);
+			await this.openInWorkspace(file);
 			return;
 		}
 		openWithDefaultApp(this.app, path);
 	}
 
-	private async openInWorkspace(
-		file: TFile,
-		options: { focusEditor: boolean } = { focusEditor: true }
-	): Promise<void> {
+	private async openInWorkspace(file: TFile): Promise<void> {
 		const leaf = this.resolveLeafForOpen();
 		await leaf.openFile(file, { active: true });
-		if (!options.focusEditor) {
-			// openFile may focus the editor asynchronously; reclaim explorer focus after.
-			window.setTimeout(() => {
-				this.app.workspace.setActiveLeaf(this.leaf, { focus: true });
-				this.focusNoteRow(file.path);
-			}, 0);
-		}
 	}
 
 	private resolveLeafForOpen(): WorkspaceLeaf {
@@ -2515,38 +2406,6 @@ export class AlternativeExplorerView extends ItemView {
 				"button.alternative-explorer-file-row[data-file-path]"
 			)
 		);
-	}
-
-	private resolveNoteRowIndex(rows: HTMLButtonElement[]): number {
-		const selected = this.selectedFilePath;
-		if (selected) {
-			const selectedIndex = rows.findIndex((row) => row.dataset.filePath === selected);
-			if (selectedIndex >= 0) return selectedIndex;
-		}
-
-		const focused = document.activeElement;
-		if (focused instanceof HTMLElement) {
-			const focusedRow = focused.closest<HTMLButtonElement>(
-				"button.alternative-explorer-file-row[data-file-path]"
-			);
-			if (focusedRow) {
-				const focusedIndex = rows.indexOf(focusedRow);
-				if (focusedIndex >= 0) return focusedIndex;
-			}
-		}
-
-		const activePath = this.activeNotePathInList(rows);
-		if (activePath) {
-			return rows.findIndex((row) => row.dataset.filePath === activePath);
-		}
-
-		return -1;
-	}
-
-	private activeNotePathInList(rows: HTMLButtonElement[]): string | null {
-		const active = this.app.workspace.getActiveFile();
-		if (!(active instanceof TFile)) return null;
-		return rows.some((row) => row.dataset.filePath === active.path) ? active.path : null;
 	}
 
 	private focusNoteRow(path: string): void {
