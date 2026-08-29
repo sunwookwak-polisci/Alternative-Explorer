@@ -135,6 +135,7 @@ export class AlternativeExplorerView extends ItemView {
 		this.registerInteractions();
 		this.registerNoteHotkeys();
 		this.registerWorkspaceSelectionSync();
+		this.selectedFilePath = this.app.workspace.getActiveFile()?.path ?? null;
 		this.render();
 	}
 
@@ -1888,6 +1889,7 @@ export class AlternativeExplorerView extends ItemView {
 		}
 		this.plugin.settings.pane = "notes";
 		this.plugin.settings.recursive = false;
+		this.selectedFilePath = file.path;
 		this.revealFilePath = file.path;
 		await this.plugin.saveSettings();
 		this.render();
@@ -2398,14 +2400,28 @@ export class AlternativeExplorerView extends ItemView {
 	private registerWorkspaceSelectionSync(): void {
 		this.registerEvent(
 			this.app.workspace.on("file-open", (file) => {
-				if (this.plugin.settings.pane !== "notes") return;
-				if (!(file instanceof TFile)) return;
-				const rows = this.getNoteRows();
-				if (!rows.some((row) => row.dataset.filePath === file.path)) return;
-				this.selectedFilePath = file.path;
-				this.applySelectionHighlight();
+				this.syncSelectionToFile(file);
 			})
 		);
+		this.registerEvent(
+			this.app.workspace.on("active-leaf-change", (leaf) => {
+				if (leaf === this.leaf) return;
+				this.syncSelectionToFile(this.app.workspace.getActiveFile());
+			})
+		);
+	}
+
+	private syncSelectionToFile(file: TFile | null): void {
+		if (!(file instanceof TFile)) return;
+
+		const pathChanged = this.selectedFilePath !== file.path;
+		this.selectedFilePath = file.path;
+		if (this.plugin.settings.pane !== "notes") return;
+
+		this.applySelectionHighlight();
+		if (pathChanged) {
+			this.findNoteRow(file.path)?.scrollIntoView({ block: "nearest" });
+		}
 	}
 
 	private getNoteRows(): HTMLButtonElement[] {

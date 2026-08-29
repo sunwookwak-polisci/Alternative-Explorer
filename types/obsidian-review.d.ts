@@ -112,6 +112,10 @@ declare module "obsidian" {
 		revealLeaf(leaf: WorkspaceLeaf): Promise<void>;
 		onLayoutReady(callback: () => unknown): void;
 		on(name: "file-open", callback: (file: TFile | null) => unknown): EventRef;
+		on(
+			name: "active-leaf-change",
+			callback: (leaf: WorkspaceLeaf | null) => unknown
+		): EventRef;
 	}
 
 	export class Scope {
