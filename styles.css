@@ -211,7 +211,8 @@ body.is-mobile .workspace-drawer-active-tab-content .workspace-leaf-content[data
 	gap: 6px;
 }
 
-.alternative-explorer-section-label h2 {
+.alternative-explorer-section-label h2,
+.alternative-explorer-section-heading {
 	margin: 0;
 	color: var(--text-muted);
 	font-size: var(--font-ui-smaller);
@@ -220,7 +221,7 @@ body.is-mobile .workspace-drawer-active-tab-content .workspace-leaf-content[data
 	text-transform: uppercase;
 }
 
-.alternative-explorer-section-label span {
+.alternative-explorer-section-label span:not(.alternative-explorer-section-heading) {
 	min-width: 16px;
 	padding: 0 4px;
 	color: var(--text-faint);
@@ -228,11 +229,31 @@ body.is-mobile .workspace-drawer-active-tab-content .workspace-leaf-content[data
 	text-align: center;
 }
 
-.alternative-explorer-notes-folders-header {
+.alternative-explorer-notes-folders-header,
+.alternative-explorer-notes-pinned-header {
 	gap: 4px;
 }
 
-.alternative-explorer-notes-folders-header .alternative-explorer-folder-toggle {
+.alternative-explorer-notes-pinned-header {
+	box-sizing: border-box;
+	width: calc(100% - 16px);
+	padding: 0;
+	color: inherit;
+	text-align: left;
+	background-color: transparent;
+	border: none;
+	border-radius: var(--radius-s);
+	cursor: pointer;
+	font: inherit;
+}
+
+.alternative-explorer-notes-pinned-header:hover,
+.alternative-explorer-notes-pinned-header:focus-within {
+	background-color: var(--nav-item-background-hover, var(--background-modifier-hover));
+}
+
+.alternative-explorer-notes-folders-header .alternative-explorer-folder-toggle,
+.alternative-explorer-notes-pinned-header .alternative-explorer-folder-toggle {
 	flex: 0 0 18px;
 	margin-left: auto;
 }

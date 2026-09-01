@@ -89,6 +89,8 @@ export interface AlternativeExplorerSettings {
 	groupPinned: boolean;
 	/** When true, the Folders block atop a folder's notes list is collapsed. */
 	notesSubfoldersCollapsed: boolean;
+	/** When true, the Pinned group in the notes list is collapsed. */
+	notesPinnedCollapsed: boolean;
 }
 
 export function createDefaultSettings(rootPath: string): AlternativeExplorerSettings {
@@ -111,6 +113,7 @@ export function createDefaultSettings(rootPath: string): AlternativeExplorerSett
 		groupBy: "mtime",
 		groupPinned: true,
 		notesSubfoldersCollapsed: false,
+		notesPinnedCollapsed: false,
 	};
 }
 
