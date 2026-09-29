@@ -88,6 +88,16 @@ function setMenuItemIsLabel(
 	item.setIsLabel?.(isLabel);
 }
 
+/** Methods used to render a note row date. Narrows Obsidian's moment export, which the plugin scorecard types as an error when the transitive moment package is unresolved. */
+interface NoteMoment {
+	format(pattern: string): string;
+	toISOString(): string;
+}
+
+function noteMoment(timestamp: number): NoteMoment {
+	return (moment as (value: number) => NoteMoment)(timestamp);
+}
+
 const SORT_BY_LABELS: Record<NoteSortBy, string> = {
 	name: "Name",
 	mtime: "Modified",
@@ -1225,12 +1235,13 @@ export class AlternativeExplorerView extends ItemView {
 		}
 		const dateValue =
 			this.plugin.settings.sortBy === "ctime" ? file.stat.ctime : file.stat.mtime;
+		const date = noteMoment(dateValue);
 		copy.createEl("time", {
 			cls: "alternative-explorer-file-date",
-			text: moment(dateValue).format("MMM D"),
+			text: date.format("MMM D"),
 			attr: {
-				datetime: moment(dateValue).toISOString(),
-				title: moment(dateValue).format("YYYY-MM-DD HH:mm"),
+				datetime: date.toISOString(),
+				title: date.format("YYYY-MM-DD HH:mm"),
 			},
 		});
 	}
