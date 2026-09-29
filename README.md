@@ -21,6 +21,7 @@ Alternative Explorer is an Apple Notes–style sidebar for browsing folders and 
 
 - Open a folder to see its notes.
 - Switch **This folder** / **All below** to show only notes in that folder, or notes in that folder and its subfolders.
+- Click the **Pinned** heading — or its chevron — to fold or expand that group. Display options stay on the sliders button in the notes toolbar.
 - Click a note to open it and move typing into the editor.
 - Create a **New note** or **New folder** from the sidebar.
 

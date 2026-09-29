@@ -143,6 +143,10 @@ export default class AlternativeExplorerPlugin extends Plugin {
 				typeof saved?.notesSubfoldersCollapsed === "boolean"
 					? saved.notesSubfoldersCollapsed
 					: defaults.notesSubfoldersCollapsed,
+			notesPinnedCollapsed:
+				typeof saved?.notesPinnedCollapsed === "boolean"
+					? saved.notesPinnedCollapsed
+					: defaults.notesPinnedCollapsed,
 		};
 		this.ensureCurrentFolderExists();
 		this.ensureNotesScopeExists();

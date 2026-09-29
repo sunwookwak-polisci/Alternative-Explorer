@@ -65,7 +65,8 @@ type FolderAction =
 	| "toggle"
 	| "back-to-folders"
 	| "toggle-section"
-	| "toggle-notes-subfolders";
+	| "toggle-notes-subfolders"
+	| "toggle-notes-pinned";
 
 type DropPosition = "before" | "after" | "into";
 
@@ -190,6 +191,10 @@ export class AlternativeExplorerView extends ItemView {
 				}
 				if (action === "toggle-notes-subfolders") {
 					void this.toggleNotesSubfoldersCollapsed();
+					return;
+				}
+				if (action === "toggle-notes-pinned") {
+					void this.toggleNotesPinnedCollapsed();
 					return;
 				}
 				if (path) {
@@ -898,21 +903,31 @@ export class AlternativeExplorerView extends ItemView {
 				cls: "alternative-explorer-section alternative-explorer-file-section",
 			});
 			const showHeader = !(group.id === "all" && groups.length === 1);
+			const pinnedCollapsed =
+				group.id === "pinned" && this.plugin.settings.notesPinnedCollapsed;
 			if (showHeader) {
 				const headingId = `alternative-explorer-group-${group.id}`;
 				section.setAttr("aria-labelledby", headingId);
-				const sectionHeader = section.createDiv({ cls: "alternative-explorer-section-header" });
-				const label = sectionHeader.createDiv({ cls: "alternative-explorer-section-label" });
-				label.createEl("h2", {
-					text: group.label,
-					attr: { id: headingId },
-				});
-				label.createSpan({
-					text: String(group.notes.length),
-					attr: {
-						"aria-label": `${group.notes.length} ${group.notes.length === 1 ? "note" : "notes"}`,
-					},
-				});
+				if (group.id === "pinned") {
+					this.renderPinnedSectionHeader(section, headingId, group.notes.length, pinnedCollapsed);
+				} else {
+					const sectionHeader = section.createDiv({ cls: "alternative-explorer-section-header" });
+					const label = sectionHeader.createDiv({ cls: "alternative-explorer-section-label" });
+					label.createEl("h2", {
+						text: group.label,
+						attr: { id: headingId },
+					});
+					label.createSpan({
+						text: String(group.notes.length),
+						attr: {
+							"aria-label": `${group.notes.length} ${group.notes.length === 1 ? "note" : "notes"}`,
+						},
+					});
+				}
+			}
+
+			if (pinnedCollapsed) {
+				continue;
 			}
 
 			const list = section.createDiv({ cls: "alternative-explorer-file-list" });
@@ -920,6 +935,44 @@ export class AlternativeExplorerView extends ItemView {
 				this.renderNoteRow(list, entry.file, pinnedPaths.has(entry.path));
 			}
 		}
+	}
+
+	private renderPinnedSectionHeader(
+		section: HTMLElement,
+		headingId: string,
+		noteCount: number,
+		collapsed: boolean
+	): void {
+		const sectionHeader = section.createEl("button", {
+			cls: `alternative-explorer-section-header alternative-explorer-notes-pinned-header${
+				collapsed ? "" : " is-expanded"
+			}`,
+			attr: {
+				type: "button",
+				"data-folder-action": "toggle-notes-pinned",
+				"aria-expanded": String(!collapsed),
+				"aria-label": collapsed ? "Expand pinned notes" : "Collapse pinned notes",
+				title: collapsed ? "Expand pinned notes" : "Collapse pinned notes",
+			},
+		});
+		const label = sectionHeader.createDiv({ cls: "alternative-explorer-section-label" });
+		label.createSpan({
+			cls: "alternative-explorer-section-heading",
+			text: "Pinned",
+			attr: { id: headingId },
+		});
+		label.createSpan({
+			text: String(noteCount),
+			attr: {
+				"aria-label": `${noteCount} ${noteCount === 1 ? "note" : "notes"}`,
+			},
+		});
+
+		const toggle = sectionHeader.createSpan({
+			cls: `clickable-icon alternative-explorer-folder-toggle${collapsed ? "" : " is-expanded"}`,
+			attr: { "aria-hidden": "true" },
+		});
+		setIcon(toggle, "chevron-right");
 	}
 
 	private getNotesPaneSubfolderKeys(): string[] {
@@ -1212,6 +1265,12 @@ export class AlternativeExplorerView extends ItemView {
 	private async toggleNotesSubfoldersCollapsed(): Promise<void> {
 		this.plugin.settings.notesSubfoldersCollapsed =
 			!this.plugin.settings.notesSubfoldersCollapsed;
+		await this.plugin.saveSettings();
+		this.render();
+	}
+
+	private async toggleNotesPinnedCollapsed(): Promise<void> {
+		this.plugin.settings.notesPinnedCollapsed = !this.plugin.settings.notesPinnedCollapsed;
 		await this.plugin.saveSettings();
 		this.render();
 	}
